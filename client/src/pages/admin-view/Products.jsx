@@ -109,13 +109,13 @@ const AdminProducts = () => {
       </div>
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
         {productsList && productsList.length > 0
-          ? productsList.map((productItem) => (
+          ? productsList.map((productItem, index) => (
               <AdminProductTile
                 setFormData={setFormData}
                 currentEditedId={currentEditedId}
                 setCurrentEditedId={setCurrentEditedId}
                 setOpenCreateProductsDialogue={setOpenCreateProductsDialogue}
-                key={productItem.title}
+                key={index}
                 product={productItem}
                 handleDelete={handleDelete}
               />

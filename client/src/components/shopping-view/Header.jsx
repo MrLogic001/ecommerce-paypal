@@ -1,4 +1,9 @@
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { HousePlug, Menu, ShoppingCart, UserCog, LogOut } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
@@ -23,38 +28,26 @@ import { fetchCartItems } from "@/store/shop/cartSlice.js";
 
 const MenuItem = () => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams()
-  const location = useLocation()
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
 
-    /* function handleNavigate(getCurrentMenuItem) {
+  const handleNavigate = (getCurrentMenuItem) => {
     sessionStorage.removeItem("filters");
     const currentFilter =
       getCurrentMenuItem.id !== "home" &&
       getCurrentMenuItem.id !== "products" &&
       getCurrentMenuItem.id !== "search"
-        ? {
-            category: [getCurrentMenuItem.id],
-          }
+        ? { category: [getCurrentMenuItem.id] }
         : null;
 
     sessionStorage.setItem("filters", JSON.stringify(currentFilter));
 
-    location.pathname.includes("listing") && currentFilter !== null
+    location.pathname.includes("listings") && currentFilter !== null
       ? setSearchParams(
           new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
         )
       : navigate(getCurrentMenuItem.path);
-  } */
-
-   const handleNavigate = (getCurrentMenuItem) => {
-    sessionStorage.removeItem('filters')
-    const currentFilter = getCurrentMenuItem.id !== 'home' ?
-    { category : [getCurrentMenuItem.id] }
-    : null
-
-    sessionStorage.setItem('filters', JSON.stringify(currentFilter))
-    navigate(getCurrentMenuItem.path)
-  } 
+  };
   return (
     <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
       {shoppingViewHeaderMenuItems.map((menuItem) => (
@@ -79,13 +72,16 @@ const HeaderRightContent = () => {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
 
+  console.log(cartItems, "header");
+  
+
   const handleLogout = () => {
     dispatch(logoutUser());
   };
 
   useEffect(() => {
     dispatch(fetchCartItems(user?.id));
-  }, dispatch);
+  }, [dispatch]);
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
@@ -94,12 +90,14 @@ const HeaderRightContent = () => {
           onClick={() => setOpenCartSheet(true)}
           variant="outline"
           size="icon"
+          className="relative"
         >
           <ShoppingCart className="h-6 w-6" />
+          <span className="absolute top-[-5px] right-[1.5px] text-sm font-bold">{cartItems?.items?.length}</span>
           <span className="sr-only">User cart</span>
         </Button>
         <UserCartWrapper
-        setOpenCartSheet={setOpenCartSheet}
+          setOpenCartSheet={setOpenCartSheet}
           cartItems={
             cartItems && cartItems.items && cartItems.items.length > 0
               ? cartItems.items
@@ -111,7 +109,7 @@ const HeaderRightContent = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-black">
-            <AvatarFallback className="bg-black text-white font-extrabold">
+            <AvatarFallback className="bg-black text-white font-extrabold cursor-pointer">
               {user?.userName[0].toUpperCase()}
             </AvatarFallback>
           </Avatar>

@@ -5,15 +5,17 @@ import UserCartItemsContent from "@/components/shopping-view/CartItemsContent";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { createNewOrder } from "@/store/shop/orderSlice";
+import { useToast } from "@/hooks/use-toast";
 
 const ShoppingCheckout = () => {
   const { cartItems } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const { toast } = useToast();
 
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
-  const [isPaymentStart, setIsPaymentStart] = useState(false)
-  const { approvalURL } = useSelector(state => state.shopOrder)
+  const [isPaymentStart, setIsPaymentStart] = useState(false);
+  const { approvalURL } = useSelector((state) => state.shopOrder);
 
   const totalCartAmount =
     cartItems && cartItems.items && cartItems.items.length > 0
@@ -28,13 +30,34 @@ const ShoppingCheckout = () => {
         )
       : 0;
 
+      console.log(cartItems.length, 'cartItems checkout');
+
+
   function handleInitiatePaypalPayment() {
+   if (cartItems?.items.length === 0) {
+      toast({
+        title: "Your cart is empty. Please add items to proceed",
+        variant: "destructive",
+      });
+
+      
+      return;
+    }
+
+    if (currentSelectedAddress === null) {
+      toast({
+        title: "Please select one address to proceed.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     console.log(cartItems, "cartItems");
     console.log(currentSelectedAddress, "currentSelectedAddress");
 
     const orderData = {
       userId: user?.id,
-      cartId:cartItems?._id,
+      cartId: cartItems?._id,
       cartItems: cartItems?.items.map((singleCartItem) => ({
         productId: singleCartItem?.productId,
         title: singleCartItem?.title,
@@ -63,13 +86,13 @@ const ShoppingCheckout = () => {
       payerId: "",
     };
 
-     dispatch(createNewOrder(orderData)).then((data) => {
+    dispatch(createNewOrder(orderData)).then((data) => {
       console.log(data, "createNewOrder");
 
       if (data?.payload?.success) {
-        setIsPaymentStart(true)
+        setIsPaymentStart(true);
       } else {
-        setIsPaymentStart(false)
+        setIsPaymentStart(false);
       }
     });
 
@@ -86,11 +109,11 @@ const ShoppingCheckout = () => {
         <img src={img} className="h-full w-full object-cover object-center" />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 p-5">
-        <Address setCurrentSelectedAddress={setCurrentSelectedAddress} />
+        <Address selectedId={currentSelectedAddress} setCurrentSelectedAddress={setCurrentSelectedAddress} />
         <div className="flex flex-col gap-4">
           {cartItems && cartItems?.items.length > 0
-            ? cartItems?.items.map((item) => (
-                <UserCartItemsContent cartItem={item} />
+            ? cartItems?.items.map((item, index) => (
+                <UserCartItemsContent key={index} cartItem={item} />
               ))
             : null}
           <div className="mt-8 space-y-4">
@@ -101,7 +124,9 @@ const ShoppingCheckout = () => {
           </div>
           <div className="mt-4 w-full">
             <Button onClick={handleInitiatePaypalPayment} className="w-full">
-              Checkout with PayPal
+              {
+                isPaymentStart ? "Processing Paypal Payment..." : "Checkout with Paypal"
+              }
             </Button>
           </div>
         </div>

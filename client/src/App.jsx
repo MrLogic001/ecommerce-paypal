@@ -20,51 +20,76 @@ import { useEffect } from "react";
 import { checkAuth } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton";
 import PaypalReturnPage from "./pages/shopping-view/paypalReturn";
+import PaymentSuccessPage from "./pages/shopping-view/PaymentSuccess";
+import SearchProducts from "./pages/shopping-view/Search";
+
+/* https://www.youtube.com/watch?v=_4CPp670fK4 */
 
 const App = () => {
-
-  const dispatch = useDispatch()
-  const { user, isAuthenticated, isLoading } = useSelector(state => state.auth)
+  const dispatch = useDispatch();
+  const { user, isAuthenticated, isLoading } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
-    dispatch(checkAuth())
-  }, [dispatch])
+    dispatch(checkAuth());
+  }, [dispatch]);
 
   if (isLoading) return <Skeleton className="w-[800] bg-black h-[600px]" />;
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
-        <Route path="/auth" element={
-          <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-            <AuthLayout />
-          </CheckAuth>
-        }>
+        <Route
+          path="/"
+          element={
+            <CheckAuth
+              isAuthenticated={isAuthenticated}
+              user={user}
+            ></CheckAuth>
+          }
+        />
+        <Route
+          path="/auth"
+          element={
+            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+              <AuthLayout />
+            </CheckAuth>
+          }
+        >
           <Route path="login" element={<AuthLogin />} />
-          <Route path="register" element={<AuthRegister/>} />
+          <Route path="register" element={<AuthRegister />} />
         </Route>
 
-        <Route path="/admin" element={
-          <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-            <AdminLayout />
-          </CheckAuth>
-        }>
+        <Route
+          path="/admin"
+          element={
+            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+              <AdminLayout />
+            </CheckAuth>
+          }
+        >
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="features" element={<AdminFeatures />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
         </Route>
 
-        <Route path="/shop" element={
-          <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-            <ShoppingLayout />
-          </CheckAuth>
-        }>
+        <Route
+          path="/shop"
+          element={
+            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+              <ShoppingLayout />
+            </CheckAuth>
+          }
+        >
           <Route path="home" element={<ShoppingHome />} />
           <Route path="listings" element={<ShoppingListings />} />
           <Route path="account" element={<ShoppingAccount />} />
           <Route path="checkout" element={<ShoppingCheckout />} />
-          <Route path="paypal-return" element={<PaypalReturnPage />}/>
+          <Route path="paypal-return" element={<PaypalReturnPage />} />
+          <Route path="payment-success" element={<PaymentSuccessPage />} />
+          <Route path="search" element={<SearchProducts />} />
         </Route>
         <Route path="unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />

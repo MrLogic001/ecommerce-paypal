@@ -7,11 +7,22 @@ const AddressCard = ({
   handleDeleteAddress,
   handleEditAddress,
   setCurrentSelectedAddress,
+  selectedId,
 }) => {
-  
   return (
-    <Card onClick={setCurrentSelectedAddress ? () => setCurrentSelectedAddress(addressInfo) : null}>
-      <CardContent className="grid gap-4">
+    <Card
+      className={`cursor-pointer ${selectedId?._id === addressInfo?._id ? 'border-red-900 border-[4px]' : 'border-black'}`}
+      onClick={
+        setCurrentSelectedAddress
+          ? () => setCurrentSelectedAddress(addressInfo)
+          : null
+      }
+    >
+      <CardContent
+        className={`${
+          selectedId === addressInfo?._id ? "border-black" : ""
+        }grid gap-4 pt-4`}
+      >
         <Label>Address: {addressInfo?.address}</Label>
         <Label>City: {addressInfo?.city}</Label>
         <Label>PinCode: {addressInfo?.pinCode}</Label>

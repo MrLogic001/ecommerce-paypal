@@ -1,9 +1,8 @@
-const Order = require("../../models/order"); 
-const Cart = require("../../models/cart"); 
-const Product = require("../../models/product"); 
+const Order = require("../../models/order");
+const Cart = require("../../models/cart");
+const Product = require("../../models/product");
 const paypalClient = require("../../helpers/paypalClient");
-const paypal = require('@paypal/checkout-server-sdk');
-
+const paypal = require("@paypal/checkout-server-sdk");
 
 const createPaypalOrder = async (req, res) => {
   try {
@@ -109,7 +108,6 @@ const createPaypalOrder = async (req, res) => {
   }
 };
 
-
 // Capture payment
 const capturePaypalPayment = async (req, res) => {
   try {
@@ -163,5 +161,61 @@ const capturePaypalPayment = async (req, res) => {
   }
 };
 
+const getAllOrdersByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
 
-module.exports = { createPaypalOrder, capturePaypalPayment };
+    const orders = await Order.find({ userId });
+
+    if (!orders.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No orders found!",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: orders,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      success: false,
+      message: "Some error occured!",
+    });
+  }
+};
+
+const getOrderDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const order = await Order.findById(id);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found!",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: order,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      success: false,
+      message: "Some error occured!",
+    });
+  }
+};
+
+module.exports = {
+  createPaypalOrder,
+  capturePaypalPayment,
+  getAllOrdersByUser,
+  getOrderDetails,
+};

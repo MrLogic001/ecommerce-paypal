@@ -1,14 +1,42 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Badge } from "../ui/badge";
 import { Dialog } from "../ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 import { Button } from "@/components/ui/button";
 import ShoppingOrderDetailsView from "./OrderDetails";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllOrdersByUserId, getOrderDetails, resetOrderDetails } from "@/store/shop/orderSlice";
 
 const ShoppingOrders = () => {
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const { orderList, orderDetails } = useSelector((state) => state.shopOrder)
 
-  const [openDetailsDialog, setOpenDetailsDialog] = useState(false)
+  useEffect(() => {
+    dispatch(getAllOrdersByUserId(user?.id));
+  }, [dispatch]);
 
+  useEffect(() => {
+    if (orderDetails !== null) {
+      setOpenDetailsDialog(true)
+    }
+  },[orderDetails])
+
+  console.log(orderDetails, 'accounts page orderDetails');
+
+  const handleFetchOrderDetails = (getOrderId) => {
+    dispatch(getOrderDetails(getOrderId))
+  }
+  
   return (
     <Card>
       <CardHeader>
@@ -28,23 +56,49 @@ const ShoppingOrders = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell>12345</TableCell>
-              <TableCell>01/09/25</TableCell>
-              <TableCell>In process</TableCell>
-              <TableCell>$1250</TableCell>
+           {
+            orderList && orderList.length > 0 ?
+            orderList.map((orderItem, index) => (
+              <TableRow key={index}>
+              <TableCell>{orderItem?._id}</TableCell>
+              <TableCell>{orderItem?.orderDate.split('T')[0]}</TableCell>
+              <TableCell><Badge
+                        className={`py-1 px-3 ${
+                          orderItem?.orderStatus === "confirmed"
+                            ? "bg-green-500"
+                            : orderItem?.orderStatus === "rejected"
+                            ? "bg-red-600"
+                            : "bg-black/75"
+                        }`}
+                      >
+                        {orderItem?.orderStatus}
+                      </Badge></TableCell>
+              <TableCell>{orderItem?.totalAmount}</TableCell>
               <TableCell>
-                <Dialog open={openDetailsDialog} onOpenChange={setOpenDetailsDialog}>
-                  <Button onClick={() => setOpenDetailsDialog(true)}>View details</Button>
-                  <ShoppingOrderDetailsView />
+                <Dialog
+                  open={openDetailsDialog}
+                  onOpenChange={() => {
+                    setOpenDetailsDialog(false)
+                    dispatch(resetOrderDetails())
+                  }}
+
+                >
+                  <Button onClick={() => handleFetchOrderDetails(orderItem?._id)}>
+                    View details
+                  </Button>
+                  <ShoppingOrderDetailsView orderDetails={orderDetails} />
                 </Dialog>
               </TableCell>
             </TableRow>
+            ))
+             
+            : null
+           }
           </TableBody>
         </Table>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default ShoppingOrders
+export default ShoppingOrders;
