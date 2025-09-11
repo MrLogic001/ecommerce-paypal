@@ -23,6 +23,10 @@ const commonFeatureRouter = require('./routes/common/featureRoutes')
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error)); 
 
+  app.get('/', (req, res) => {
+  res.send('Welcome to the MERN, PayPal integrated backend!');
+   });
+
   /*mongoose.connect("mongodb+srv://levitator023:nVPKjCdY80iIXuwp@cluster0.yh2v3yz.mongodb.net/", {
   useNewUrlParser: true,
   //useUnifiedTopology: true,
