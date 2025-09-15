@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const backendUrl = "http://localhost:5000";
+export const backendUrl = "https://ecomm-pay-server.onrender.com";
 
 const initialState = {
   isAuthenticated: false,
