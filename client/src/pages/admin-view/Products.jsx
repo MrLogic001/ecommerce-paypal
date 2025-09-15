@@ -17,7 +17,7 @@ import {
   deleteProduct,
 } from "@/store/admin/product-slice";
 import { useToast } from "@/hooks/use-toast";
-import AdminProductTile from "@/components/admin-view/productTile";
+import AdminProductTile from "@/components/admin-view/ProductTile";
 
 const AdminProducts = () => {
   const initialFormData = {
