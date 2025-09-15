@@ -1,3 +1,5 @@
+//Available at your primary URL ==> https://ecomm-pay-server.onrender.com
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");

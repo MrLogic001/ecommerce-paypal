@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { backendUrl } from "@/store/auth-slice";
 
 const initialState = {
   isLoading: false,
@@ -17,7 +18,7 @@ export const getAllFilteredProducts = createAsyncThunk(
         sortBy: sortParams
     })
     const response = await axios.get(
-      `http://localhost:5000/api/shop/products/get?${query}`,
+      `${backendUrl}/api/shop/products/get?${query}`,
       {}
     );
     return response?.data;
@@ -26,7 +27,7 @@ export const getAllFilteredProducts = createAsyncThunk(
 
 export const getProductDetails = createAsyncThunk(`/products/getproductdetails/`, async(id) => {
 
-    const result = await axios.get(`http://localhost:5000/api/shop/products/get/${id}`)
+    const result = await axios.get(`${backendUrl}/api/shop/products/get/${id}`)
 
     return result?.data
 })
