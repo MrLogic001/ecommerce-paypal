@@ -35,9 +35,24 @@ const commonFeatureRouter = require('./routes/common/featureRoutes')
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(
+/* app.use(
   cors({
    origin: "https://ecommerce-paypal-frontend.onrender.com",
+    methods: ["GET", "POST", "DELETE", "PUT"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cache-Control",
+      "Expires",
+      "Pragma",
+    ],
+    credentials: true,
+  })
+); */
+
+app.use(
+  cors({
+    origin: "https://ecommerce-paypal-client.onrender.com", // Update this to your frontend URL
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
       "Content-Type",
