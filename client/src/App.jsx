@@ -23,8 +23,6 @@ import PaypalReturnPage from "./pages/shopping-view/paypalReturn";
 import PaymentSuccessPage from "./pages/shopping-view/PaymentSuccess";
 import SearchProducts from "./pages/shopping-view/Search";
 
-/* https://www.youtube.com/watch?v=_4CPp670fK4 */
-
 const App = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated, isLoading } = useSelector(
